@@ -23,11 +23,3 @@ class Product(models.Model):
     color       = models.CharField(max_length=30, blank=True)
     league      = models.CharField(max_length=40, blank=True) # EPL/LaLiga
     club        = models.CharField(max_length=60, blank=True)
-
-# class Employe(models.Model):
-#     name = models.CharField (max_length= 225)
-#     age = models.IntegerField()
-#     persona = models.TextField()
-
-    def __str__(self):
-        return f"{self.name} (Rp{self.price})"
