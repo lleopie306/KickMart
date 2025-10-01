@@ -1,23 +1,56 @@
 <nav class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 shadow-sm z-50">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
-      
+
       <!-- Brand -->
       <div class="flex items-center">
         <h1 class="text-2xl font-bold">
-          <span class="text-blue-600">Kick</span><span class="text-orange-500">Mart</span>
+          <span class="text-blue-600">Kick</span><span class="text-purple-500">Mart</span>
         </h1>
       </div>
 
+      <!-- Search Bar (desktop) -->
+      <div class="hidden md:flex flex-1 mx-6">
+        <input type="text" placeholder="Search products..."
+          class="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center space-x-8">
+      <div class="hidden md:flex items-center space-x-6">
         <a href="/" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
+        
+        <!-- Dropdown -->
+        <div class="relative group">
+          <button class="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center">
+            Categories
+            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div class="absolute hidden group-hover:block bg-white border rounded-lg shadow-lg mt-2 py-2 w-40">
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Shoes</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Jersey</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Accessories</a>
+          </div>
+        </div>
+
         <a href="{% url 'main:create_product' %}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Add Product</a>
         <a href="{% url 'main:show_main' %}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Products</a>
       </div>
 
       <!-- Desktop User Section -->
       <div class="hidden md:flex items-center space-x-6">
+        <!-- Cart Icon -->
+        <a href="#" class="relative text-gray-700 hover:text-blue-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9h14l-2-9M10 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
+          </svg>
+          <span
+            class="absolute -top-1 -right-2 bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
+        </a>
+
         {% if user.is_authenticated %}
           <div class="text-right">
             <div class="text-sm font-semibold text-gray-900">{{ name|default:user.username }}</div>
@@ -26,7 +59,7 @@
           <a href="{% url 'main:logout' %}" class="text-red-600 hover:text-red-700 font-medium transition-colors">Logout</a>
         {% else %}
           <a href="{% url 'main:login' %}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Login</a>
-          <a href="{% url 'main:register' %}" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-medium transition-colors">Register</a>
+          <a href="{% url 'main:register' %}" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded font-medium transition-colors">Register</a>
         {% endif %}
       </div>
 
@@ -47,12 +80,26 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu hidden md:hidden bg-white border-t border-gray-200">
     <div class="px-6 py-4 space-y-4">
-      
+
+      <!-- Search bar mobile -->
+      <input type="text" placeholder="Search products..."
+        class="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
       <!-- Mobile Navigation Links -->
       <div class="space-y-1">
         <a href="/" class="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors">Home</a>
         <a href="{% url 'main:create_product' %}" class="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors">Add Product</a>
         <a href="{% url 'main:show_main' %}" class="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors">Products</a>
+
+        <!-- Dropdown Mobile -->
+        <div>
+          <span class="block text-gray-700 font-medium py-2">Categories</span>
+          <div class="pl-4 space-y-1">
+            <a href="#" class="block text-gray-600 hover:text-blue-600 text-sm">Shoes</a>
+            <a href="#" class="block text-gray-600 hover:text-blue-600 text-sm">Jersey</a>
+            <a href="#" class="block text-gray-600 hover:text-blue-600 text-sm">Accessories</a>
+          </div>
+        </div>
       </div>
 
       <!-- Mobile User Section -->
@@ -66,7 +113,7 @@
         {% else %}
           <div class="space-y-3">
             <a href="{% url 'main:login' %}" class="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors">Login</a>
-            <a href="{% url 'main:register' %}" class="block bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded text-center transition-colors">Register</a>
+            <a href="{% url 'main:register' %}" class="block bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded text-center transition-colors">Register</a>
           </div>
         {% endif %}
       </div>

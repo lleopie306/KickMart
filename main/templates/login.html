@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Login - KickMart</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="bg-gray-50 w-full min-h-screen flex items-center justify-center p-8">
-  <div class="max-w-md w-full">
+<div class="relative w-full min-h-screen flex items-center justify-center p-8 overflow-hidden">
+  <!-- Background image -->
+  <div class="absolute inset-0 bg-[url('{% static "image/bg-football.png" %}')] bg-cover bg-center"></div>
+  
+  <!-- Overlay pastel biru -->
+  <div class="absolute inset-0 bg-blue-200/50"></div>
+
+  <!-- Card Login -->
+  <div class="relative max-w-md w-full z-10">
     <div class="bg-white rounded-lg border border-gray-200 p-6 sm:p-8 form-style shadow-md">
       <div class="text-center mb-8">
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h1>
