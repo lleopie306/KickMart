@@ -1,38 +1,180 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Product Detail - KickMart</title>
+{% endblock meta %}
 
 {% block content %}
-<p><a href="{% url 'main:show_main' %}"><button>← Back to Product List</button></a></p>
+<div class="bg-gradient-to-b from-purple-50 via-blue-50 to-white w-full min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<h1>{{ product.name }}</h1>
+    <!-- Back Navigation -->
+    <div class="mb-6">
+      <a href="{% url 'main:show_main' %}" class="text-purple-600 hover:text-blue-600 font-medium transition-colors">
+        ← Back to Products
+      </a>
+    </div>
 
-<p>
-  <b>{{ product.category|default:"Uncategorized" }}</b>
-  {% if product.is_featured %} | <b>Featured</b>{% endif %}
-  {% if product.brand %} | Brand: {{ product.brand }}{% endif %}
-  {% if product.league %} | League: {{ product.league }}{% endif %}
-  {% if product.club %} | Club: {{ product.club }}{% endif %}
-  | Stock: {{ product.stock }}
-  | Rating: {{ product.rating|floatformat:1 }}/5
-</p>
+    <!-- Loading State -->
+    <div id="loading-state" class="bg-white rounded-lg border border-blue-200 p-12 text-center">
+      <svg class="animate-spin h-8 w-8 text-purple-500 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      <p class="text-purple-500 mt-3">Loading product detail...</p>
+    </div>
 
-{% if product.thumbnail %}
-<img src="{{ product.thumbnail }}" alt="Product thumbnail" width="300">
-<br /><br />
-{% endif %}
+    <!-- Error State -->
+    <div id="error-state" class="bg-white rounded-lg border border-blue-200 p-12 text-center hidden">
+      <div class="w-16 h-16 mx-auto mb-4">
+        <div class="text-red-500 text-5xl">⚠️</div>
+      </div>
+      <h3 class="text-lg font-medium text-purple-900 mb-2">Failed to load product</h3>
+      <p class="text-purple-500">Please try again later.</p>
+    </div>
 
-<p><b>Price:</b> Rp {{ product.price }}</p>
+    <!-- Product Content -->
+    <article id="product-content" class="bg-white rounded-lg border border-blue-200 overflow-hidden hidden">
+      
+      <!-- Header -->
+      <div class="p-6 sm:p-8 bg-gradient-to-r from-purple-100 via-blue-100 to-white">
+        <div id="badges-container" class="flex flex-wrap items-center gap-2 mb-4"></div>
 
-<p>
-  {% if product.size %}<b>Size:</b> {{ product.size }}{% endif %}
-  {% if product.color %}{% if product.size %} | {% endif %}<b>Color:</b> {{ product.color }}{% endif %}
-</p>
+        <h1 id="product-name" class="text-3xl sm:text-4xl font-bold text-purple-900 leading-tight mb-3"></h1>
 
-<p>{{ product.description }}</p>
+        <div class="flex flex-wrap items-center text-sm text-purple-600 gap-4">
+          <span id="product-category"></span>
+          <span id="product-brand"></span>
+        </div>
+      </div>
 
-{% if product.user %}
-    <p>Author: {{ product.user.username }}</p>
-{% else %}
-    <p>Author: Anonymous</p>
-{% endif %}
+      <!-- Product Image -->
+      <div id="product-image-container" class="px-6 sm:px-8 hidden">
+        <img id="product-image" src="" alt="" class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg border border-blue-100">
+      </div>
+
+      <!-- Product Description -->
+      <div class="p-6 sm:p-8">
+        <div class="prose prose-lg max-w-none">
+          <div id="product-description" class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6 text-purple-800">
+          <p><strong>Price:</strong> Rp<span id="product-price"></span></p>
+          <p><strong>Stock:</strong> <span id="product-stock"></span></p>
+          <p><strong>Size:</strong> <span id="product-size"></span></p>
+          <p><strong>Color:</strong> <span id="product-color"></span></p>
+          <p><strong>League:</strong> <span id="product-league"></span></p>
+          <p><strong>Club:</strong> <span id="product-club"></span></p>
+          <p><strong>Rating:</strong> ⭐ <span id="product-rating"></span>/5</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-blue-100 p-6 sm:p-8 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium text-purple-900">
+              <p id="product-author">Uploaded by: Loading...</p>
+            </div>
+            <p class="text-sm text-purple-500">Product Owner</p>
+          </div>
+          <button class="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-6 py-2 rounded-xl shadow hover:opacity-90 transition">
+            Add to Cart 🛒
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<script>
+const PRODUCT_ID = "{{ product.id }}";
+const PRODUCT_DETAIL_ENDPOINT = `{% url 'main:show_json_by_id' '00000000-0000-0000-0000-000000000000' %}`
+  .replace('00000000-0000-0000-0000-000000000000', PRODUCT_ID);
+
+const loadingState = document.getElementById('loading-state');
+const errorState = document.getElementById('error-state');
+const productContent = document.getElementById('product-content');
+const badgesContainer = document.getElementById('badges-container');
+const productName = document.getElementById('product-name');
+const productCategory = document.getElementById('product-category');
+const productBrand = document.getElementById('product-brand');
+const productDescription = document.getElementById('product-description');
+const productPrice = document.getElementById('product-price');
+const productStock = document.getElementById('product-stock');
+const productSize = document.getElementById('product-size');
+const productColor = document.getElementById('product-color');
+const productLeague = document.getElementById('product-league');
+const productClub = document.getElementById('product-club');
+const productRating = document.getElementById('product-rating');
+const productImageContainer = document.getElementById('product-image-container');
+const productImage = document.getElementById('product-image');
+const productAuthor = document.getElementById('product-author');
+
+function showState(state) {
+  loadingState.classList.toggle('hidden', state !== 'loading');
+  errorState.classList.toggle('hidden', state !== 'error');
+  productContent.classList.toggle('hidden', state !== 'ready');
+}
+
+function renderProduct(product) {
+  document.title = `${product.name} - KickMart`;
+  productName.textContent = product.name;
+  productBrand.textContent = product.brand ? `Brand: ${product.brand}` : '';
+  productCategory.textContent = product.category || '';
+
+  badgesContainer.innerHTML = '';
+
+  if (product.is_featured) {
+    const featuredBadge = document.createElement('span');
+    featuredBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-gradient-to-r from-blue-500 to-purple-500 text-white';
+    featuredBadge.textContent = 'Featured';
+    badgesContainer.appendChild(featuredBadge);
+  }
+
+  if (product.stock < 5) {
+    const lowStockBadge = document.createElement('span');
+    lowStockBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-100 text-red-700';
+    lowStockBadge.textContent = 'Low Stock';
+    badgesContainer.appendChild(lowStockBadge);
+  }
+
+  if (product.thumbnail) {
+    productImage.src = product.thumbnail;
+    productImage.alt = product.name;
+    productImageContainer.classList.remove('hidden');
+  } else {
+    productImageContainer.classList.add('hidden');
+  }
+
+  productDescription.textContent = product.description || 'No description available.';
+  productPrice.textContent = product.price ? product.price.toLocaleString('id-ID') : 'N/A';
+  productStock.textContent = product.stock ?? '-';
+  productSize.textContent = product.size || '-';
+  productColor.textContent = product.color || '-';
+  productLeague.textContent = product.league || '-';
+  productClub.textContent = product.club || '-';
+  productRating.textContent = !isNaN(product.rating) ? Number(product.rating).toFixed(1) : '0.0';
+  productAuthor.textContent = `Uploaded by: ${product.user_username || 'Unknown'}`;
+}
+
+async function loadProductDetail() {
+  try {
+    showState('loading');
+    const response = await fetch(PRODUCT_DETAIL_ENDPOINT, { headers: { 'Accept': 'application/json' }});
+    if (!response.ok) throw new Error('Failed to fetch product detail');
+    const data = await response.json();
+    renderProduct(data);
+    showState('ready');
+  } catch (err) {
+    console.error('Error loading product detail:', err);
+    showState('error');
+  }
+}
+
+loadProductDetail();
+</script>
 
 {% endblock content %}

@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from main.forms import ProductForm
 from main.models import Product
@@ -14,6 +15,10 @@ from django.contrib.auth.decorators import login_required
 import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+
+from django.http import HttpResponseRedirect, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 @login_required(login_url='/login')
@@ -140,5 +145,72 @@ def delete_product(request, id):
     product.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
 
+def show_json_by_id(request, product_id):
+    try:
+        product = Product.objects.select_related('user').get(pk=product_id)
+        data = {
+            'id': str(product.id),
+            'name': product.name,
+            'price': float(product.price) if product.price is not None else 0,
+            'description': product.description,
+            'category': product.category,
+            'thumbnail': product.thumbnail,
+            'is_featured': product.is_featured,
+            'user_id': product.user_id,
+            'user_username': product.user.username if product.user_id else None,
+            'stock': product.stock,
+            'brand': product.brand,
+            'rating': float(product.rating) if product.rating is not None else 0,
+            'size': product.size,
+            'color': product.color,
+            'league': getattr(product, 'league', None),
+            'club': getattr(product, 'club', None),
+        }
+        return JsonResponse(data)
+    except Product.DoesNotExist:
+        return JsonResponse({'detail': 'Not found'}, status=404)
 
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    name = request.POST.get("name")
+    description = request.POST.get("description")
+    category = request.POST.get("category")
+    thumbnail = request.POST.get("thumbnail")
+    stock = request.POST.get("stock")
+    brand = request.POST.get("brand")
+    size = request.POST.get("size")
+    color = request.POST.get("color")
+    league = request.POST.get("league")  
+    club = request.POST.get("club")      
+    price = request.POST.get("price")
+    rating = request.POST.get("rating")
+    is_featured = request.POST.get("is_featured") == 'on'
+    user = request.user
 
+    try:
+        stock = int(stock) if stock else 0
+        price = float(price) if price else 0
+        rating = float(rating) if rating else 0
+    except ValueError:
+        return HttpResponse("Invalid numeric input", status=400)
+
+    new_product = Product(
+        name=name,
+        description=description,
+        category=category,
+        thumbnail=thumbnail,
+        stock=stock,
+        brand=brand,
+        size=size,
+        color=color,
+        league=league,   
+        club=club,       
+        price=price,
+        rating=rating,
+        is_featured=is_featured,
+        user=user,
+    )
+
+    new_product.save()
+    return HttpResponse(b"CREATED", status=201)

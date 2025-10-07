@@ -114,3 +114,5 @@ Jawaban :
 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
 Jawaban :
     Pada tugas kali ini aku mengerjakan sesuai dengan checklist yang sudah di berkan di tugas 5 kemudian aku mengikuti step by step seperti tutorial 4 hal pertama yang aku lakukan adalah menambhakan tailwind ke aplikasi setelah itu aku menambahkan sebuat fitur edit product dan juga menghapus product serta membuat berkas html baru untuk edit product nya.setelah itu aku menambahkan sebuah bar navigation di aplikasi website nya dan di bagian navbar ini aku menambahkan beberapa kode agar sesuai sama navbar yang aku pengen setelah itu aku melakukan konfigurasi static file di aplikasi web nya setelah itu aku membuat styling aplikasi nya dengan menggunakan tailwnd yang sudah aku tambahkan di awal dan external css setelah itu aku menghubungkan lobal css nya dengan script tailwind ke base html habis tu aku custom styling nya ke global.css sesuai dengan warna yang aku mau biru pastel dan putih dan aku melakukan styling navbar dan lain lain nya menyesuaikan dengan desain warna yang aku pengen deh.
+
+Jawaban Tugas 6 :
