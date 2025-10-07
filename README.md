@@ -116,3 +116,24 @@ Jawaban :
     Pada tugas kali ini aku mengerjakan sesuai dengan checklist yang sudah di berkan di tugas 5 kemudian aku mengikuti step by step seperti tutorial 4 hal pertama yang aku lakukan adalah menambhakan tailwind ke aplikasi setelah itu aku menambahkan sebuat fitur edit product dan juga menghapus product serta membuat berkas html baru untuk edit product nya.setelah itu aku menambahkan sebuah bar navigation di aplikasi website nya dan di bagian navbar ini aku menambahkan beberapa kode agar sesuai sama navbar yang aku pengen setelah itu aku melakukan konfigurasi static file di aplikasi web nya setelah itu aku membuat styling aplikasi nya dengan menggunakan tailwnd yang sudah aku tambahkan di awal dan external css setelah itu aku menghubungkan lobal css nya dengan script tailwind ke base html habis tu aku custom styling nya ke global.css sesuai dengan warna yang aku mau biru pastel dan putih dan aku melakukan styling navbar dan lain lain nya menyesuaikan dengan desain warna yang aku pengen deh.
 
 Jawaban Tugas 6 :
+1. Apa perbedaan antara synchronous request dan asynchronous request?
+Jawaban :
+    Synchronous itu misalnya kayak kita lagi antre di loket tunggal. Dimana kita kasih permintaan, terus harus nunggu sampai petugasnya beres dulu baru bisa lanjut. Di website, ini berarti browser bakal berhenti sebentar sampai server ngasih balasan, baru deh halaman direload ulang. Jadi setiap kali minta data, halamannya ke-refresh total. Sedangkan kalo Asynchronous kebalikannya misal kita bisa jalan sambil minum kopi terus kita kirim permintaan ke server, tapi sambil nunggu, kita masih bisa ngelakuin hal lain di halaman itu. Request-nya jalan di belakang layar, dan pas server udah selesai, cuma bagian tertentu dari halaman yang di-update.
+
+2. Bagaimana AJAX bekerja di Django (alur request–response)?
+Jawaban : 
+    misalnya user ngelakuin sesuatu kaya mau klik tombol “Like” atau submit form komentar. JavaScript bakalan langsung gerak jadinya script di browser yang ngurusin trs dia ngirim request ke server Django di belakang layar makanya disebut asynchronous, karena jalan tanpa ganggu aktivitas lain di halaman. Abis itu Django nerima request itu view Django bakal proses datanya kayak biasa bisa ambil data dari database, nyimpen, ngedit, dll. Nanti Django bales balik bedanya, dia nggak ngirim satu halaman HTML penuh, tapi cuma potongan data aja (biasanya format JSON). JavaScript bakalan update tampilan pas data itu balik, JavaScript langsung ubah bagian tertentu di halaman misalnya angka “likes”-nya nambah jadi 11 jadi gosah reload total buat liat likes nya.
+
+3. Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+Jawaban : 
+    Lebih cepat: karena yang dikirim cuma data kecil, bukan satu halaman lengkap.
+    Tanpa reload: pengguna nggak lihat layar putih atau loading ulang, semuanya terasa mulus.
+    Hemat data: cuma ngirim info yang dibutuhin aja, bukan satu paket besar.
+
+4. Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+Jawaban :
+    Supaya aman, AJAX harus tetap mengikuti sistem keamanan Django dengan menyertakan CSRF token di setiap request AJAX. Token ini berfungsi untuk mencegah serangan Cross-Site Request Forgery (CSRF). Kalau token nggak dikirim, Django bakal otomatis nolak request-nya. Selain itu, pastikan koneksi website udah pakai HTTPS biar data sensitif seperti password nggak bisa disadap. Dan jangan lupa, biarkan Django yang meng-hash password seperti biasa AJAX cuma ngirim data, bukan yang nyimpen password-nya.
+
+5. Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+Jawaban :
+    AJAX bikin website jadi lebih cepat, interaktif, dan modern. Dimana pengguna bisa ngelakuin aksi seperti login, tambah produk, atau kirim komentar tanpa reload halaman penuh. Hasilnya langsung muncul di layar secara instan, jadi pengalaman pengguna terasa lebih halus dan responsif. Dengan AJAX, interaksi di website jadi lebih nyaman nggak ada jeda atau layar putih pas berpindah antarfitur.
