@@ -129,3 +129,16 @@
     });
   </script>
 </nav>
+
+
+<button id = "sort-asc"> urutan murah </button>
+<button id = "sort-desc"> urutan mahal </button>
+<div id = "product-items">
+
+
+document.getElementById("sort-asc").addEventListener("click", function() {
+  fetchProducts('price-asc');
+});
+document.getElementById("sort-desc").addEventListener("click", function() {
+  fetchProducts('price-desc');
+});
